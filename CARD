@@ -1,0 +1,109 @@
+import java.util.Scanner;
+
+public class creditCard {
+
+   public static void main(String[] args) {
+       Scanner scan = new Scanner(System.in);
+
+       // Ask user to enter card number
+       System.out.print("Enter card number: ");
+       long cardNumber = Long.parseLong(scan.nextLine());
+
+       // Convert it into string
+       String card = String.valueOf(cardNumber);
+
+       // Some variables to be used when cardNumber is changed
+       String reversed = "";
+       String multiply_subtract = "";
+
+       // Iterate loop till user doesn't enter -1
+       while (cardNumber != -1) {
+           // get last digit
+           int check_digit = Integer.parseInt(card.charAt(card.length() - 1) + "");
+
+           // Drop last digit
+           // extract substring from card, leaving the last digit and assign to variable
+           // card
+           card = card.substring(0, card.length() - 1);
+
+           // reverse card number
+           // Iterate loop from last index to first
+           // add every character to string reversed
+           for (int i = card.length() - 1; i >= 0; i--) {
+               reversed += card.charAt(i);
+           }
+
+           // multiply values at odd position by 2
+           // Iterate loop over string reversed
+           for (int i = 0; i < reversed.length(); i++) {
+
+               // Multiply the digits in odd positions (1, 3, 5, etc.) by 2.
+               // We are checking i+1 because index starts from 0
+               if ((i + 1) % 2 != 0) {
+                   // when position is odd
+                   // get digit from reversed, multiply it by 9
+                   // if after multiplication value > 9, subtract 9 from it
+                   int value = Integer.parseInt(reversed.charAt(i) + "");
+                   value = value * 2;
+                   if (value > 9) {
+                       value = value - 9;
+                   }
+                   // then append value to new string multiply_subtract
+                   multiply_subtract += value;
+               }
+               // else, add the current character if position is even
+               else {
+                   multiply_subtract += reversed.charAt(i);
+               }
+           }
+
+           // Sum all numbers
+           int sum = 0;
+
+           // Iterate over multiply_subtract and add every digit in it to sum
+           for (int i = 0; i < multiply_subtract.length(); i++) {
+               sum += Integer.parseInt(multiply_subtract.charAt(i) + "");
+           }
+
+           // Calculate modulo
+           int modulo = sum % 10;
+
+           // Calculate result
+           int result = modulo + check_digit;
+
+           // If result is 0 or 10, print valid card number and call function to get type
+           // of card
+           if (result == 0 || result == 10) {
+               System.out.println("Credit Card number is valid");
+               System.out.println("Type of card: " + typeOfCard(String.valueOf(cardNumber)));
+           } else {
+               System.out.println("Credit Card number is not valid");
+           }
+
+           // Ask to enter another card number
+           System.out.print("\nEnter card number: ");
+           cardNumber = Long.parseLong(scan.nextLine());
+       }
+   }
+
+   public static String typeOfCard(String card) {
+       String type = "";
+
+       // Get first five digit from string card
+       int starting1 = Integer.parseInt(card.substring(0, 6));
+       // Get first 2 digit from card
+       int starting2 = Integer.parseInt(card.substring(0, 2));
+
+       // If card starts with 34 or 37, type is American express
+       // If card matches pattern p2 or p3, type is Master Card
+       // If card starts with 4, type is Visa
+       if (card.startsWith("34") || card.startsWith("37")) {
+           type = "American Express";
+       } else if ((starting1 >= 222100 && starting1 <= 272099) || (starting2 >= 51 && starting2 <= 55)) {
+           type = "MasterCard";
+       } else if (card.startsWith("4")) {
+           type = "Visa";
+       }
+       return type;
+   }
+}
